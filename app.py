@@ -3,6 +3,7 @@ import sys
 import json
 import asyncio
 import logging
+import dotenv
 
 from pathlib import Path
 
@@ -22,6 +23,8 @@ def check_api_key():
 # =============================================================================
 # DJANGO CONFIGURATION & SETUP
 # =============================================================================
+
+dotenv.load_dotenv()
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', '__main__')
 
@@ -116,6 +119,7 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
         self.audio_buffer = bytearray()
         self.buffer_lock = asyncio.Lock()
         self.buffer_task = None
+        self.detected_keywords = []
 
     async def connect(self):
         """Accept WebSocket connection and setup Deepgram client."""
@@ -257,6 +261,39 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
             print(f"❌ Error processing audio buffer: {e}")
             logger.error(f"Error processing audio buffer: {e}")
 
+    def parse_transcription(self, transcript):
+        """Parse transcription for keywords/phrases."""
+        transcript_lower = transcript.lower()
+        
+        # Example: Detect specific words
+        if "hello" in transcript_lower:
+            print("🔍 Detected greeting!")
+            return f"👋 {transcript}"
+        
+        # Example: Detect commands
+        if "stop" in transcript_lower:
+            print("🛑 Detected stop command!")
+            return f"⏹️ {transcript}"
+        
+        # Example: Detect questions
+        if transcript.strip().endswith("?"):
+            return f"❓ {transcript}"
+        
+        return transcript
+
+    def detect_keywords(self, transcript):
+        """Return detected keywords from transcription."""
+        keywords = []
+        transcript_lower = transcript.lower()
+        
+        # Add your keyword detection logic here
+        if "urgent" in transcript_lower:
+            keywords.append("urgent")
+        if "meeting" in transcript_lower:
+            keywords.append("meeting")
+        
+        return keywords
+
     async def initialize_deepgram_connection(self):
         """Initialize Deepgram live transcription connection."""
         try:
@@ -280,18 +317,32 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
                 if result:
                     transcript = result.channel.alternatives[0].transcript
                     if transcript.strip():
+                        # === ADD YOUR PARSING LOGIC HERE ===
+                        parsed_result = consumer.parse_transcription(transcript)
+                        consumer.detected_keywords = consumer.detect_keywords(transcript)
+                        
                         print("=" * 50)
                         print("🎤 LIVE TRANSCRIPTION RESULT:")
-                        print(f"📝 Text: '{transcript}'")
+                        print(f"📝 Original: '{transcript}'")
+                        print(f"🔍 Parsed: '{parsed_result}'")
                         print(f"🔄 Final: {result.is_final}")
                         print("=" * 50)
 
-                        # Send to Django WebSocket using captured consumer reference
+                        # Send original transcription
                         import asyncio
                         asyncio.create_task(consumer.send(text_data=json.dumps({
                             'type': 'transcription_update',
                             'transcription': transcript
                         })))
+                        
+                        # Send parsed response if different from original
+                        if parsed_result != transcript:
+                            asyncio.create_task(consumer.send(text_data=json.dumps({
+                                'type': 'parsed_response',
+                                'transcription': parsed_result,
+                                'original': transcript,
+                                'detected_keywords': consumer.detected_keywords
+                            })))
 
             async def on_metadata(self, metadata, **kwargs):
                 print(f"🆔 Metadata received")

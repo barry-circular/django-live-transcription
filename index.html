@@ -51,6 +51,50 @@
             codeElement.appendChild(errorSpan);
         }
 
+        function addTranscriptionEntry(text, timestamp = null, type = 'transcription') {
+            const codeElement = transcription.querySelector('code');
+            const time = timestamp || new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '8px';
+            entry.style.padding = '4px 0';
+            entry.style.borderBottom = '1px solid var(--dg-gray-200)';
+            
+            // Different styling based on message type
+            if (type === 'parsed') {
+                entry.style.backgroundColor = 'var(--dg-blue-50)';
+                entry.style.borderLeft = '4px solid var(--dg-blue-500)';
+                entry.style.paddingLeft = '8px';
+            }
+            
+            const timeSpan = document.createElement('span');
+            timeSpan.style.color = 'var(--dg-gray-500)';
+            timeSpan.style.fontSize = '0.8em';
+            timeSpan.textContent = `[${time}] `;
+            
+            const typeSpan = document.createElement('span');
+            typeSpan.style.fontSize = '0.7em';
+            typeSpan.style.fontWeight = 'bold';
+            typeSpan.style.marginRight = '4px';
+            if (type === 'parsed') {
+                typeSpan.textContent = '🔍 ';
+                typeSpan.style.color = 'var(--dg-blue-600)';
+            } else {
+                typeSpan.textContent = '🎤 ';
+                typeSpan.style.color = 'var(--dg-gray-600)';
+            }
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = text;
+            
+            entry.appendChild(timeSpan);
+            entry.appendChild(typeSpan);
+            entry.appendChild(textSpan);
+            codeElement.appendChild(entry);
+            
+            // Auto-scroll to bottom
+            transcription.scrollTop = transcription.scrollHeight;
+        }
+
           let microphone = null;
 
         async function getMicrophone() {
@@ -111,9 +155,9 @@
                     console.log('Received:', data.type);
 
                     if (data.type === 'transcription_update') {
-                        const codeElement = transcription.querySelector('code');
-                        codeElement.textContent = data.transcription;
-                        transcription.scrollTop = transcription.scrollHeight;
+                        addTranscriptionEntry(data.transcription, null, 'transcription');
+                    } else if (data.type === 'parsed_response') {
+                        addTranscriptionEntry(data.transcription, null, 'parsed');
                     } else if (data.type === 'transcription_status') {
                         updateStatus(`Connected - ${data.status}`, true);
                     } else if (data.type === 'error') {

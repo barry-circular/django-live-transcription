@@ -1,0 +1,26 @@
+[project]
+name = "django-live-transcription"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "BazRLDev",email = "bazrl.dev@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "django (>=4.2)",
+    "channels (>=4.0)",
+    "deepgram-sdk (>=4.8.1)",
+    "python-dotenv (>=1.0.0)",
+    "django-cors-headers (>=4.0)",
+    "daphne (>=4.0.0)",
+    "pytest (>=7.0.0)",
+    "pytest-asyncio (>=0.21.0)",
+    "pytest-django (>=4.5.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
