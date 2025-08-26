@@ -2,5 +2,5 @@
     name = barry-circular
     email = barry@joincircular.com
 [remote "origin"]
-    url = git@circular.github.com:barry-circular/deepgram-starters/django-live-transcription.git
+    url = git@circular.github.com:barry-circular/django-live-transcription.git
     fetch = +refs/heads/*:refs/remotes/origin/*%
