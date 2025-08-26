@@ -294,6 +294,71 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
         
         return keywords
 
+    async def process_transcription_async(self, transcript):
+        """Process transcription asynchronously without blocking the main flow."""
+        try:
+            # Your long-running parsing logic here
+            parsed_result = await self.parse_transcription_with_api(transcript)
+            self.detected_keywords = await self.detect_keywords_with_api(transcript)
+            
+            print("=" * 50)
+            print("🔍 ASYNC PARSING COMPLETE:")
+            print(f"📝 Original: '{transcript}'")
+            print(f"🔍 Parsed: '{parsed_result}'")
+            print("=" * 50)
+            
+            # Send parsed response if different from original
+            if parsed_result != transcript:
+                await self.send(text_data=json.dumps({
+                    'type': 'parsed_response',
+                    'transcription': parsed_result,
+                    'original': transcript,
+                    'detected_keywords': self.detected_keywords
+                }))
+                
+        except Exception as e:
+            print(f"❌ Error in async parsing: {e}")
+            logger.error(f"Error in async parsing: {e}")
+
+    async def parse_transcription_with_api(self, transcript):
+        """Example of long-running parsing with API call."""
+        transcript_lower = transcript.lower()
+        
+        # Simulate API call
+        if "hello" in transcript_lower:
+            # This could be a real API call that takes time
+            await asyncio.sleep(5)  # Simulate API delay
+            print("🔍 Detected greeting via API!")
+            return f"👋 {transcript}"
+        
+        # More API calls...
+        if "stop" in transcript_lower:
+            await asyncio.sleep(0.5)  # Simulate API delay
+            print("🛑 Detected stop command via API!")
+            return f"⏹️ {transcript}"
+        
+        # Example: Detect questions
+        if transcript.strip().endswith("?"):
+            await asyncio.sleep(0.3)  # Simulate API delay
+            print("❓ Detected question via API!")
+            return f"❓ {transcript}"
+        
+        return transcript
+
+    async def detect_keywords_with_api(self, transcript):
+        """Example of long-running keyword detection with API call."""
+        transcript_lower = transcript.lower()
+        keywords = []
+
+        if "urgent" in transcript_lower:
+            await asyncio.sleep(0.3) # Simulate API delay
+            keywords.append("urgent")
+        if "meeting" in transcript_lower:
+            await asyncio.sleep(0.4) # Simulate API delay
+            keywords.append("meeting")
+
+        return keywords
+
     async def initialize_deepgram_connection(self):
         """Initialize Deepgram live transcription connection."""
         try:
@@ -317,32 +382,21 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
                 if result:
                     transcript = result.channel.alternatives[0].transcript
                     if transcript.strip():
-                        # === ADD YOUR PARSING LOGIC HERE ===
-                        parsed_result = consumer.parse_transcription(transcript)
-                        consumer.detected_keywords = consumer.detect_keywords(transcript)
-                        
                         print("=" * 50)
-                        print("🎤 LIVE TRANSCRIPTION RESULT:")
+                        print("🎤 LIVE TRANSCRIPTION RECEIVED:")
                         print(f"📝 Original: '{transcript}'")
-                        print(f"🔍 Parsed: '{parsed_result}'")
                         print(f"🔄 Final: {result.is_final}")
                         print("=" * 50)
 
-                        # Send original transcription
+                        # Send original transcription IMMEDIATELY (non-blocking)
                         import asyncio
                         asyncio.create_task(consumer.send(text_data=json.dumps({
                             'type': 'transcription_update',
                             'transcription': transcript
                         })))
                         
-                        # Send parsed response if different from original
-                        if parsed_result != transcript:
-                            asyncio.create_task(consumer.send(text_data=json.dumps({
-                                'type': 'parsed_response',
-                                'transcription': parsed_result,
-                                'original': transcript,
-                                'detected_keywords': consumer.detected_keywords
-                            })))
+                        # Run parsing in background task (non-blocking)
+                        asyncio.create_task(consumer.process_transcription_async(transcript))
 
             async def on_metadata(self, metadata, **kwargs):
                 print(f"🆔 Metadata received")
