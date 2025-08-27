@@ -120,6 +120,63 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
         self.buffer_lock = asyncio.Lock()
         self.buffer_task = None
         self.detected_keywords = []
+        self.patient_history = None
+        self.load_patient_history()
+
+    def load_patient_history(self):
+        """Load the initial patient history from JSON file."""
+        try:
+            import json
+            import os
+            from pathlib import Path
+            
+            # Get the path to the static directory
+            base_dir = Path(__file__).resolve().parent
+            json_path = base_dir / 'static' / 'patient_history.json'
+            
+            with open(json_path, 'r', encoding='utf-8') as f:
+                self.patient_history = json.load(f)
+                logger.info("✅ Patient history loaded successfully")
+        except Exception as e:
+            logger.error(f"❌ Error loading patient history: {e}")
+            self.patient_history = {}
+
+    def merge_section_data(self, section_name, new_data):
+        """Merge new data with existing section data instead of overwriting."""
+        if not self.patient_history or section_name not in self.patient_history:
+            return new_data
+        
+        existing_data = self.patient_history[section_name]
+        merged_data = existing_data.copy()
+        
+        for key, new_value in new_data.items():
+            if key in existing_data:
+                existing_value = existing_data[key]
+                
+                # Handle list merging
+                if isinstance(existing_value, list) and isinstance(new_value, list):
+                    # Merge lists, avoiding duplicates
+                    merged_list = existing_value.copy()
+                    for item in new_value:
+                        if item not in merged_list:
+                            merged_list.append(item)
+                    merged_data[key] = merged_list
+                
+                # Handle dictionary merging (for nested objects)
+                elif isinstance(existing_value, dict) and isinstance(new_value, dict):
+                    merged_data[key] = {**existing_value, **new_value}
+                
+                # Handle simple value replacement (for non-lists/dicts)
+                else:
+                    merged_data[key] = new_value
+            else:
+                # New key, just add it
+                merged_data[key] = new_value
+        
+        # Update the in-memory patient history
+        self.patient_history[section_name] = merged_data
+        
+        return merged_data
 
     async def connect(self):
         """Accept WebSocket connection and setup Deepgram client."""
@@ -315,6 +372,24 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
                     'original': transcript,
                     'detected_keywords': self.detected_keywords
                 }))
+            
+            # NEW: Check for medical history updates
+            section_updates = await self.detect_medical_history_updates(transcript)
+            
+            for section_name, new_data, completeness in section_updates:
+                print(f"🏥 Updating section '{section_name}' with new data")
+                
+                # Merge new data with existing data instead of overwriting
+                merged_data = self.merge_section_data(section_name, new_data)
+                
+                await self.send(text_data=json.dumps({
+                    'type': 'section_update',
+                    'section_name': section_name,
+                    'new_data': merged_data,  # Send merged data for section display
+                    'original_new_data': new_data,  # Send original new data for notification
+                    'completeness': completeness,
+                    'is_increment': True  # Flag indicating this is an increment value
+                }))
                 
         except Exception as e:
             print(f"❌ Error in async parsing: {e}")
@@ -359,6 +434,227 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
 
         return keywords
 
+    async def detect_medical_history_updates(self, transcript):
+        """Detect medical information in transcription and return section updates."""
+        transcript_lower = transcript.lower()
+        updates = []
+        
+        # Simulate API delay for medical entity detection
+        await asyncio.sleep(0.2)
+        
+        # Example: Detect new symptoms
+        if any(symptom in transcript_lower for symptom in ['headache', 'migraine', 'pain', 'dizziness', 'fatigue', 'nausea']):
+            if 'headache' in transcript_lower or 'migraine' in transcript_lower:
+                updates.append((
+                    'illness_timeline',
+                    {
+                        'current_dominant_symptoms': ['headaches']  # Only the new symptom
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'dizziness' in transcript_lower:
+                updates.append((
+                    'dysautonomia_pots',
+                    {
+                        'orthostatic_intolerance': ['lightheadedness']  # Only the new symptom
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+        
+        # Example: Detect new medications
+        if any(med in transcript_lower for med in ['aspirin', 'ibuprofen', 'tylenol', 'acetaminophen', 'vitamin', 'supplement']):
+            if 'aspirin' in transcript_lower:
+                updates.append((
+                    'medications_supplements',
+                    {
+                        'current_meds': [
+                            {"name": "Aspirin", "dose": "81 mg", "route": "oral", "frequency": "as needed", "indication": "headache relief"}
+                        ]
+                    },
+                    0.08  # Increment completeness by 8%
+                ))
+            elif 'vitamin d' in transcript_lower:
+                updates.append((
+                    'medications_supplements',
+                    {
+                        'current_supplements': ['vitamin D']  # Only the new supplement
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+        
+        # Example: Detect family history updates
+        if any(term in transcript_lower for term in ['mother', 'father', 'sister', 'brother', 'family', 'parent']):
+            if 'diabetes' in transcript_lower and ('mother' in transcript_lower or 'father' in transcript_lower):
+                updates.append((
+                    'family_history',
+                    {
+                        'other_chronic': ["Mother: diabetes"]  # Only the new condition
+                    },
+                    0.06  # Increment completeness by 6%
+                ))
+            elif 'cancer' in transcript_lower:
+                updates.append((
+                    'family_history',
+                    {
+                        'other_chronic': ["Father: cancer"]  # Only the new condition
+                    },
+                    0.06  # Increment completeness by 6%
+                ))
+        
+        # Example: Detect lab results
+        if any(lab in transcript_lower for lab in ['blood test', 'lab result', 'esr', 'crp', 'ana', 'test result']):
+            if 'esr' in transcript_lower and '15' in transcript:
+                updates.append((
+                    'immune_inflammatory',
+                    {
+                        'known_labs': {
+                            'esr': 15  # Only the updated value
+                        }
+                    },
+                    0.07  # Increment completeness by 7%
+                ))
+            elif 'crp' in transcript_lower and '2.5' in transcript:
+                updates.append((
+                    'immune_inflammatory',
+                    {
+                        'known_labs': {
+                            'crp_mg_l': 2.5  # Only the updated value
+                        }
+                    },
+                    0.07  # Increment completeness by 7%
+                ))
+        
+        # Example: Detect lifestyle changes
+        if any(term in transcript_lower for term in ['exercise', 'walking', 'steps', 'activity', 'workout']):
+            if 'steps' in transcript_lower and any(str(num) in transcript for num in range(6000, 10000)):
+                updates.append((
+                    'lifestyle_function',
+                    {
+                        'exercise_tolerance': {
+                            'avg_steps_per_day': 7500  # Only the updated value
+                        }
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'exercise' in transcript_lower and 'improved' in transcript_lower:
+                updates.append((
+                    'lifestyle_function',
+                    {
+                        'exercise_tolerance': {
+                            'intensity_tolerance': 'moderate',  # Only the updated value
+                            'crash_frequency_per_month': 1  # Only the updated value
+                        }
+                    },
+                    0.08  # Increment completeness by 8%
+                ))
+        
+        # Example: Detect MCAS and allergy updates
+        if any(term in transcript_lower for term in ['allergic', 'allergy', 'reaction', 'sensitive', 'intolerant', 'mcas', 'histamine', 'flushing', 'hives', 'rash', 'itching']):
+            if 'peanuts' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'food_reactions': ['peanuts']  # Only the new food
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'shellfish' in transcript_lower or 'shrimp' in transcript_lower or 'crab' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'food_reactions': ['shellfish']  # Only the new food
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'tree nuts' in transcript_lower or 'almonds' in transcript_lower or 'walnuts' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'food_reactions': ['tree nuts']  # Only the new food
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'dairy' in transcript_lower or 'milk' in transcript_lower or 'cheese' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'food_reactions': ['dairy products']  # Only the new food
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'flushing' in transcript_lower or 'red face' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'skin_symptoms': ['facial flushing']  # Only the new symptom
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'hives' in transcript_lower or 'urticaria' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'skin_symptoms': ['hives']  # Only the new symptom
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'tinnitus' in transcript_lower or 'ringing ears' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'neuro_otologic': ['ear ringing']  # Only the new symptom
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+            elif 'seasonal' in transcript_lower and 'allergies' in transcript_lower:
+                updates.append((
+                    'mcas_allergic',
+                    {
+                        'seasonal_sensitivities': ['fall ragweed', 'summer grasses']  # Only the new sensitivities
+                    },
+                    0.06  # Increment completeness by 6%
+                ))
+            elif 'gluten' in transcript_lower:
+                updates.append((
+                    'gi_nutrition',
+                    {
+                        'food_intolerances_allergies': ['gluten']  # Only the new intolerance
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+        
+        # Example: Detect new infections
+        if any(term in transcript_lower for term in ['infection', 'cold', 'flu', 'virus', 'bacterial']):
+            if 'covid' in transcript_lower:
+                updates.append((
+                    'infection_exposure_history',
+                    {
+                        'acute_infections_history': ['COVID-19 (2024)']  # Only the new infection
+                    },
+                    0.08  # Increment completeness by 8%
+                ))
+            elif 'strep' in transcript_lower:
+                updates.append((
+                    'infection_exposure_history',
+                    {
+                        'acute_infections_history': ['strep throat (2024)']  # Only the new infection
+                    },
+                    0.08  # Increment completeness by 8%
+                ))
+        
+        # Example: Detect sleep changes
+        if any(term in transcript_lower for term in ['sleep', 'insomnia', 'rest', 'tired', 'exhausted']):
+            if 'sleep' in transcript_lower and 'improved' in transcript_lower:
+                updates.append((
+                    'energy_pem_me_cfs',
+                    {
+                        'sleep': ['improved sleep quality']  # Only the new sleep status
+                    },
+                    0.05  # Increment completeness by 5%
+                ))
+        
+        return updates
+
     async def initialize_deepgram_connection(self):
         """Initialize Deepgram live transcription connection."""
         try:
@@ -388,15 +684,20 @@ class TranscriptionConsumer(AsyncWebsocketConsumer):
                         print(f"🔄 Final: {result.is_final}")
                         print("=" * 50)
 
-                        # Send original transcription IMMEDIATELY (non-blocking)
+                        # Always send transcription to frontend for real-time display
                         import asyncio
                         asyncio.create_task(consumer.send(text_data=json.dumps({
                             'type': 'transcription_update',
-                            'transcription': transcript
+                            'transcription': transcript,
+                            'is_final': result.is_final
                         })))
                         
-                        # Run parsing in background task (non-blocking)
-                        asyncio.create_task(consumer.process_transcription_async(transcript))
+                        # Only process final transcriptions for medical history updates
+                        if result.is_final:
+                            print("✅ Processing FINAL transcription for medical updates")
+                            asyncio.create_task(consumer.process_transcription_async(transcript))
+                        else:
+                            print("⏳ Skipping interim transcription - waiting for final result")
 
             async def on_metadata(self, metadata, **kwargs):
                 print(f"🆔 Metadata received")

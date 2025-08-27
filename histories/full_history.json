@@ -1,0 +1,177 @@
+{
+    "patient_id": "9e5a9d5d-6f2a-4a3e-9d2a-29f7b8d7f4a1",
+    "created_at": "2025-08-27T09:58:00Z",
+    "last_updated": "2025-08-27T09:58:00Z",
+    "source": "scribe_ai",
+    "completeness": {
+      "core_demographics": 1.0,
+      "illness_timeline": 0.95,
+      "past_medical_history": 0.8,
+      "family_history": 0.6,
+      "infection_exposure_history": 0.9,
+      "gi_nutrition": 0.9,
+      "dysautonomia_pots": 0.85,
+      "mcas_allergic": 0.7,
+      "energy_pem_me_cfs": 0.95,
+      "immune_inflammatory": 0.6,
+      "medications_supplements": 1.0,
+      "lifestyle_function": 0.85
+    },
+  
+    "core_demographics": {
+      "age": 35,
+      "sex": "male",
+      "ethnicity": "White",
+      "occupation_lifestyle": {
+        "occupation": "Software architect",
+        "lifestyle_pattern": "mixed",
+        "outdoors_exposure": "moderate",
+        "travel_frequency": "occasional"
+      },
+      "place_of_birth": "Cork, Ireland",
+      "childhood_environment": "Coastal town; active in sports during school years",
+      "current_location": {
+        "city": "Dublin",
+        "region": "Leinster",
+        "country": "Ireland",
+        "living_situation": "with_family"
+      },
+      "notes": "Non-smoker; alcohol socially (1–2/week)."
+    },
+  
+    "illness_timeline": {
+      "onset": {
+        "date": "2022-02-10",
+        "trigger": "covid",
+        "details": "PCR-confirmed COVID-19; moderate acute illness without hospitalization."
+      },
+      "early_symptoms": [
+        "fatigue",
+        "exertional dyspnea",
+        "palpitations on standing",
+        "headaches",
+        "sleep fragmentation"
+      ],
+      "progression": {
+        "pattern": "waxing_waning",
+        "relapse_frequency_per_year": 4,
+        "notes": "Flares after respiratory infections and high stress weeks."
+      },
+      "current_dominant_symptoms": [
+        "post-exertional malaise",
+        "orthostatic intolerance",
+        "brain fog",
+        "unrefreshing sleep",
+        "temperature dysregulation"
+      ]
+    },
+  
+    "past_medical_history": {
+      "significant_illnesses": ["mild intermittent asthma", "migraine without aura"],
+      "childhood_infections": ["strep throat", "EBV/mono (age ~17)"],
+      "hospitalizations": [
+        { "reason": "Dehydration from gastroenteritis", "year": 2012, "notes": "IV fluids overnight" }
+      ],
+      "surgeries_major_injuries": [
+        { "procedure_or_injury": "Left ankle sprain (grade II)", "year": 2016, "notes": "Physio; full recovery" }
+      ]
+    },
+  
+    "family_history": {
+      "autoimmune": ["Mother: Hashimoto's thyroiditis"],
+      "allergies_mcas": ["Sister: seasonal allergic rhinitis"],
+      "pots_dysautonomia": [],
+      "other_chronic": ["Father: hypertension"]
+    },
+  
+    "infection_exposure_history": {
+      "tick_exposure_risk": "moderate",
+      "other_vector_exposures": ["House cat (possible Bartonella exposure)"],
+      "acute_infections_history": ["COVID-19 (2022)", "influenza-like illness (2023)"],
+      "geographic_exposures": [
+        { "place": "Spain (Barcelona region)", "from": "2025-02-20", "to": "2025-03-20" },
+        { "place": "UK (London)", "from": "2018-04-01", "to": "2019-03-31" }
+      ]
+    },
+  
+    "gi_nutrition": {
+      "reflux_gastritis_ulcers": ["occasional reflux (diet-triggered)"],
+      "ibs_bloating_bowel": ["bloating", "constipation alternating with normal"],
+      "suspected_sibo_leaky_gut": false,
+      "food_intolerances_allergies": ["histamine-rich foods may worsen flushing", "lactose - mild"],
+      "nutrition_status": {
+        "weight_change_kg_6mo": -2.5,
+        "diet_type": "whole-food, slightly low-carb",
+        "supplements": ["vitamin D3 2000 IU", "magnesium glycinate 200 mg", "coenzyme Q10 200 mg"]
+      }
+    },
+  
+    "dysautonomia_pots": {
+      "orthostatic_intolerance": ["dizziness on standing", "palpitations", "near-syncope in hot showers"],
+      "cold_intolerance_blood_pooling_exercise": ["cold hands/feet", "exercise intolerance > moderate effort"],
+      "nasa_lean_test": {
+        "supine_hr": 62,
+        "stand_hr_1min": 88,
+        "stand_hr_3min": 98,
+        "stand_hr_10min": 112,
+        "delta_hr_max": 50,
+        "notes": "BP stable; symptoms reproduced at ~8–10 min."
+      }
+    },
+  
+    "mcas_allergic": {
+      "skin_symptoms": ["intermittent flushing", "dermatographia"],
+      "food_reactions": ["aged cheeses", "red wine", "leftover meats (possible histamine)"],
+      "neuro_otologic": ["tinnitus intermittent"],
+      "seasonal_sensitivities": ["spring pollen"]
+    },
+  
+    "energy_pem_me_cfs": {
+      "pem": {
+        "triggers": ["brisk 30–40 min walk", "poor sleep night", "multi-hour cognitive work"],
+        "delay_hours": 12,
+        "recovery_time_days": 2.5
+      },
+      "fatigue_type": "mixed",
+      "sleep": ["sleep onset insomnia", "unrefreshing sleep"],
+      "cognitive": ["slowed processing", "word-finding difficulty", "reduced working memory"]
+    },
+  
+    "immune_inflammatory": {
+      "known_labs": {
+        "esr": 8,
+        "crp_mg_l": 1.2,
+        "ana": "negative",
+        "immunoglobulins": { "IgG": 10.2, "IgA": 2.1, "IgM": 1.3 }
+      },
+      "cytokines": [],
+      "infection_pattern_notes": "Colds last slightly longer than baseline."
+    },
+  
+    "medications_supplements": {
+      "current_meds": [
+        { "name": "Bisoprolol", "dose": "1.25 mg", "route": "oral", "frequency": "daily", "indication": "orthostatic intolerance" },
+        { "name": "Cetirizine", "dose": "10 mg", "route": "oral", "frequency": "daily", "indication": "allergic symptoms" }
+      ],
+      "current_supplements": ["vitamin D3", "magnesium glycinate", "coenzyme Q10"],
+      "past_treatments": [
+        { "name": "Low-dose naltrexone", "outcome": "helpful", "notes": "Improved PEM; mild vivid dreams initially" },
+        { "name": "Montelukast", "outcome": "no_change", "notes": "2-week trial" }
+      ]
+    },
+  
+    "lifestyle_function": {
+      "exercise_tolerance": {
+        "avg_steps_per_day": 5500,
+        "intensity_tolerance": "light",
+        "crash_frequency_per_month": 2
+      },
+      "stress_mental_health": ["work-related stress spikes", "uses mindfulness 10 min/day"],
+      "work_capacity": "reduced_hours",
+      "disability_status": "none",
+      "support_system": "Partner, close friends, online patient community"
+    },
+  
+    "free_text_notes": "Patient prioritizes pacing; uses heart rate alerts to avoid overexertion."
+  }
+  

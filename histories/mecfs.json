@@ -1,0 +1,156 @@
+{
+    "patient_id": "f91d3d9c-cc44-40b1-8cb2-fc22e437e202",
+    "created_at": "2025-08-18T10:15:00Z",
+    "last_updated": "2025-08-18T10:15:00Z",
+    "source": "intake_form",
+    "completeness": {
+      "core_demographics": 0.9,
+      "illness_timeline": 0.7,
+      "past_medical_history": 0.6,
+      "family_history": 0.2,
+      "infection_exposure_history": 0.4,
+      "gi_nutrition": 0.5,
+      "dysautonomia_pots": 0.2,
+      "mcas_allergic": 0.0,
+      "energy_pem_me_cfs": 0.7,
+      "immune_inflammatory": 0.1,
+      "medications_supplements": 0.6,
+      "lifestyle_function": 0.7
+    },
+  
+    "core_demographics": {
+      "age": 29,
+      "sex": "male",
+      "ethnicity": null,
+      "occupation_lifestyle": {
+        "occupation": "Graphic designer",
+        "lifestyle_pattern": "sedentary",
+        "outdoors_exposure": null,
+        "travel_frequency": null
+      },
+      "place_of_birth": "Toronto, Canada",
+      "childhood_environment": null,
+      "current_location": {
+        "city": "Vancouver",
+        "region": "BC",
+        "country": "Canada",
+        "living_situation": "with_family"
+      },
+      "notes": null
+    },
+  
+    "illness_timeline": {
+      "onset": {
+        "date": "2017-05-01",
+        "trigger": "other_infection",
+        "details": "Flu-like illness followed by persistent fatigue."
+      },
+      "early_symptoms": [],
+      "progression": {
+        "pattern": "waxing_waning",
+        "relapse_frequency_per_year": null,
+        "notes": null
+      },
+      "current_dominant_symptoms": ["post-exertional malaise", "non-refreshing sleep", "muscle pain"]
+    },
+  
+    "past_medical_history": {
+      "significant_illnesses": ["childhood asthma (resolved)"],
+      "childhood_infections": [],
+      "hospitalizations": [],
+      "surgeries_major_injuries": [
+        { "procedure_or_injury": "wisdom teeth removal", "year": 2015, "notes": null }
+      ]
+    },
+  
+    "family_history": {
+      "autoimmune": [],
+      "allergies_mcas": [],
+      "pots_dysautonomia": [],
+      "other_chronic": []
+    },
+  
+    "infection_exposure_history": {
+      "tick_exposure_risk": "low",
+      "other_vector_exposures": [],
+      "acute_infections_history": [],
+      "geographic_exposures": []
+    },
+  
+    "gi_nutrition": {
+      "reflux_gastritis_ulcers": [],
+      "ibs_bloating_bowel": [],
+      "suspected_sibo_leaky_gut": null,
+      "food_intolerances_allergies": [],
+      "nutrition_status": {
+        "weight_change_kg_6mo": null,
+        "diet_type": null,
+        "supplements": ["magnesium", "B-complex vitamins"]
+      }
+    },
+  
+    "dysautonomia_pots": {
+      "orthostatic_intolerance": [],
+      "cold_intolerance_blood_pooling_exercise": [],
+      "nasa_lean_test": {
+        "supine_hr": null,
+        "stand_hr_1min": null,
+        "stand_hr_3min": null,
+        "stand_hr_10min": null,
+        "delta_hr_max": null,
+        "notes": null
+      }
+    },
+  
+    "mcas_allergic": {
+      "skin_symptoms": [],
+      "food_reactions": [],
+      "neuro_otologic": [],
+      "seasonal_sensitivities": []
+    },
+  
+    "energy_pem_me_cfs": {
+      "pem": {
+        "triggers": ["moderate exercise", "long work days"],
+        "delay_hours": 24,
+        "recovery_time_days": 3
+      },
+      "fatigue_type": "mixed",
+      "sleep": ["unrefreshing sleep"],
+      "cognitive": ["brain fog worse in afternoon"]
+    },
+  
+    "immune_inflammatory": {
+      "known_labs": {
+        "esr": null,
+        "crp_mg_l": null,
+        "ana": null,
+        "immunoglobulins": {}
+      },
+      "cytokines": [],
+      "infection_pattern_notes": null
+    },
+  
+    "medications_supplements": {
+      "current_meds": [],
+      "current_supplements": ["magnesium", "B-complex vitamins"],
+      "past_treatments": [
+        { "name": "Amitriptyline", "outcome": "intolerable_side_effects", "notes": null }
+      ]
+    },
+  
+    "lifestyle_function": {
+      "exercise_tolerance": {
+        "avg_steps_per_day": 3500,
+        "intensity_tolerance": null,
+        "crash_frequency_per_month": null
+      },
+      "stress_mental_health": [],
+      "work_capacity": "reduced_hours",
+      "disability_status": null,
+      "support_system": "Lives with partner"
+    },
+  
+    "free_text_notes": "Reports difficulty concentrating during design tasks; brain fog increases late day."
+  }
+  

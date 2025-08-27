@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Update Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-section {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+        
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #45a049;
+        }
+        
+        .section-content {
+            color: #1a1a1a;
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin-top: 10px;
+        }
+        
+        .completeness-badge {
+            background-color: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            float: right;
+        }
+        
+        /* Animation keyframes */
+        @keyframes highlightSection {
+            0% { 
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                transform: scale(1);
+            }
+            10% { 
+                box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.4);
+                transform: scale(1.02);
+            }
+            90% { 
+                box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
+                transform: scale(1.02);
+            }
+            100% { 
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes highlightNewText {
+            0% { 
+                background-color: rgba(76, 175, 80, 0.3);
+                color: #2E7D32;
+                font-weight: bold;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+            80% { 
+                background-color: rgba(76, 175, 80, 0.1);
+                color: #2E7D32;
+                font-weight: bold;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+            100% { 
+                background-color: transparent;
+                color: #1a1a1a;
+                font-weight: normal;
+                padding: 2px 0;
+                border-radius: 0;
+            }
+        }
+        
+        @keyframes pulseBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slideInNotification {
+            from { 
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutNotification {
+            from { 
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to { 
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Visual Update Effects Test</h1>
+    <p>Click the buttons below to test the visual update effects:</p>
+    
+    <div class="test-section" data-section-name="mcas_allergic">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ddd;">
+            <h4 style="margin: 0;">MCAS Allergic</h4>
+            <span class="completeness-badge">70%</span>
+        </div>
+        <div class="section-content">
+            <div>Skin Symptoms: intermittent flushing, dermatographia</div>
+            <div>Food Reactions: aged cheeses, red wine, leftover meats</div>
+            <div>Neuro Otologic: tinnitus intermittent</div>
+        </div>
+    </div>
+    
+    <div class="test-section" data-section-name="medications_supplements">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ddd;">
+            <h4 style="margin: 0;">Medications & Supplements</h4>
+            <span class="completeness-badge">100%</span>
+        </div>
+        <div class="section-content">
+            <div>Current Meds: Bisoprolol 1.25mg daily, Cetirizine 10mg daily</div>
+            <div>Current Supplements: vitamin D3, magnesium glycinate, coenzyme Q10</div>
+        </div>
+    </div>
+    
+    <button class="test-button" onclick="testSectionHighlight()">Test Section Highlight</button>
+    <button class="test-button" onclick="testNewTextHighlight()">Test New Text Highlight</button>
+    <button class="test-button" onclick="testBadgePulse()">Test Badge Pulse</button>
+    <button class="test-button" onclick="testNotification()">Test Notification</button>
+    <button class="test-button" onclick="testFullUpdate()">Test Full Update</button>
+    
+    <script>
+        function testSectionHighlight() {
+            const section = document.querySelector('[data-section-name="mcas_allergic"]');
+            section.style.animation = 'highlightSection 3s ease';
+            setTimeout(() => {
+                section.style.animation = '';
+            }, 3000);
+        }
+        
+        function testNewTextHighlight() {
+            const content = document.querySelector('[data-section-name="mcas_allergic"] .section-content');
+            const newLine = document.createElement('div');
+            newLine.style.animation = 'highlightNewText 3s ease';
+            newLine.textContent = 'New: peanuts allergy';
+            content.appendChild(newLine);
+        }
+        
+        function testBadgePulse() {
+            const badge = document.querySelector('.completeness-badge');
+            badge.style.animation = 'pulseBadge 1s ease';
+            setTimeout(() => {
+                badge.textContent = '85%';
+                badge.style.animation = '';
+            }, 500);
+        }
+        
+        function testNotification() {
+            // Create a mock parsed responses container
+            let mockContainer = document.getElementById('mock-parsed-responses');
+            if (!mockContainer) {
+                mockContainer = document.createElement('div');
+                mockContainer.id = 'mock-parsed-responses';
+                mockContainer.style.cssText = `
+                    background: #f0f8ff;
+                    border: 1px solid #b3d9ff;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 20px 0;
+                    max-width: 600px;
+                    font-family: monospace;
+                    font-size: 0.9em;
+                `;
+                mockContainer.innerHTML = '<div>Mock Parsed Responses Container</div>';
+                document.body.appendChild(mockContainer);
+            }
+            
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.style.cssText = `
+                margin-bottom: 8px;
+                padding: 4px 0;
+                border-bottom: 1px solid #b3d9ff;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            entry.innerHTML = `
+                <span style="color: #666; font-size: 0.8em;">[${time}] </span>
+                <span style="font-size: 0.7em; font-weight: bold; margin-right: 4px; color: #2E7D32;">🏥 </span>
+                <span style="color: #2E7D32; font-weight: 500;">MCAS Allergic Updated: </span>
+                <span style="color: #333;">Added food reactions: peanuts</span>
+            `;
+            
+            mockContainer.appendChild(entry);
+            
+            // Add highlight effect
+            setTimeout(() => {
+                entry.style.background = 'rgba(76, 175, 80, 0.1)';
+                entry.style.borderRadius = '4px';
+                entry.style.padding = '6px 8px';
+                setTimeout(() => {
+                    entry.style.background = '';
+                    entry.style.borderRadius = '';
+                    entry.style.padding = '4px 0';
+                }, 2000);
+            }, 100);
+        }
+        
+        function testFullUpdate() {
+            // Simulate a full update
+            testSectionHighlight();
+            setTimeout(() => testNewTextHighlight(), 100);
+            setTimeout(() => testBadgePulse(), 200);
+            setTimeout(() => testNotification(), 300);
+        }
+    </script>
+</body>
+</html>

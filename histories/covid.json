@@ -1,0 +1,160 @@
+{
+    "patient_id": "7c12a4a1-3c4f-4e91-bf99-d87a2e6f9e01",
+    "created_at": "2025-08-20T14:30:00Z",
+    "last_updated": "2025-08-20T14:30:00Z",
+    "source": "intake_form",
+    "completeness": {
+      "core_demographics": 0.8,
+      "illness_timeline": 0.7,
+      "past_medical_history": 0.5,
+      "family_history": 0.3,
+      "infection_exposure_history": 0.2,
+      "gi_nutrition": 0.6,
+      "dysautonomia_pots": 0.1,
+      "mcas_allergic": 0.1,
+      "energy_pem_me_cfs": 0.4,
+      "immune_inflammatory": 0.0,
+      "medications_supplements": 0.5,
+      "lifestyle_function": 0.5
+    },
+  
+    "core_demographics": {
+      "age": 42,
+      "sex": "female",
+      "ethnicity": null,
+      "occupation_lifestyle": {
+        "occupation": "Secondary school teacher",
+        "lifestyle_pattern": "lightly_active",
+        "outdoors_exposure": null,
+        "travel_frequency": null
+      },
+      "place_of_birth": null,
+      "childhood_environment": null,
+      "current_location": {
+        "city": "Manchester",
+        "region": null,
+        "country": "UK",
+        "living_situation": null
+      },
+      "notes": null
+    },
+  
+    "illness_timeline": {
+      "onset": {
+        "date": "2022-01-12",
+        "trigger": "covid",
+        "details": null
+      },
+      "early_symptoms": ["persistent cough", "shortness of breath", "fatigue"],
+      "progression": {
+        "pattern": null,
+        "relapse_frequency_per_year": null,
+        "notes": null
+      },
+      "current_dominant_symptoms": ["severe fatigue", "brain fog", "difficulty with exertion"]
+    },
+  
+    "past_medical_history": {
+      "significant_illnesses": ["migraine (since teens)"],
+      "childhood_infections": [],
+      "hospitalizations": [],
+      "surgeries_major_injuries": []
+    },
+  
+    "family_history": {
+      "autoimmune": ["sister: rheumatoid arthritis"],
+      "allergies_mcas": [],
+      "pots_dysautonomia": [],
+      "other_chronic": []
+    },
+  
+    "infection_exposure_history": {
+      "tick_exposure_risk": "unknown",
+      "other_vector_exposures": [],
+      "acute_infections_history": [],
+      "geographic_exposures": []
+    },
+  
+    "gi_nutrition": {
+      "reflux_gastritis_ulcers": [],
+      "ibs_bloating_bowel": ["alternating constipation/diarrhea"],
+      "suspected_sibo_leaky_gut": null,
+      "food_intolerances_allergies": [],
+      "nutrition_status": {
+        "weight_change_kg_6mo": null,
+        "diet_type": null,
+        "supplements": ["Vitamin D3"]
+      }
+    },
+  
+    "dysautonomia_pots": {
+      "orthostatic_intolerance": [],
+      "cold_intolerance_blood_pooling_exercise": [],
+      "nasa_lean_test": {
+        "supine_hr": null,
+        "stand_hr_1min": null,
+        "stand_hr_3min": null,
+        "stand_hr_10min": null,
+        "delta_hr_max": null,
+        "notes": null
+      }
+    },
+  
+    "mcas_allergic": {
+      "skin_symptoms": [],
+      "food_reactions": [],
+      "neuro_otologic": [],
+      "seasonal_sensitivities": []
+    },
+  
+    "energy_pem_me_cfs": {
+      "pem": {
+        "triggers": [],
+        "delay_hours": null,
+        "recovery_time_days": null
+      },
+      "fatigue_type": null,
+      "sleep": [],
+      "cognitive": []
+    },
+  
+    "immune_inflammatory": {
+      "known_labs": {
+        "esr": null,
+        "crp_mg_l": null,
+        "ana": null,
+        "immunoglobulins": {}
+      },
+      "cytokines": [],
+      "infection_pattern_notes": null
+    },
+  
+    "medications_supplements": {
+      "current_meds": [
+        {
+          "name": "Paracetamol",
+          "dose": "500 mg",
+          "route": "oral",
+          "frequency": "as needed",
+          "indication": null
+        }
+      ],
+      "current_supplements": ["Vitamin D3"],
+      "past_treatments": []
+    },
+  
+    "lifestyle_function": {
+      "exercise_tolerance": {
+        "avg_steps_per_day": 2000,
+        "intensity_tolerance": "very_light",
+        "crash_frequency_per_month": null
+      },
+      "stress_mental_health": [],
+      "work_capacity": "part_time",
+      "disability_status": null,
+      "support_system": null
+    },
+  
+    "free_text_notes": "Patient reports frequent relapses after minor colds. Struggles with full teaching schedule."
+  }
+  
